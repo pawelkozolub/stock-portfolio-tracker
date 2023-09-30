@@ -1,8 +1,8 @@
 package org.example.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.model.StockPrice;
-import org.example.service.StockPriceRepository;
+import org.example.model.PriceHistory;
+import org.example.service.PriceHistoryRepository;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
@@ -16,21 +16,21 @@ import java.util.List;
 
 @Slf4j
 @Controller
-public class UpdateStockPrices {
+public class UpdatePriceHistory {
 
     private final String CSV_DIR = "./csvdata/";
     private final String CSV_FILE_LIST = "_csv_files.txt";
     private final ResourceLoader resourceLoader;
-    private final StockPriceRepository stockPriceRepository;
+    private final PriceHistoryRepository priceHistoryRepository;
 
-    public UpdateStockPrices(ResourceLoader resourceLoader, StockPriceRepository stockPriceRepository) {
+    public UpdatePriceHistory(ResourceLoader resourceLoader, PriceHistoryRepository priceHistoryRepository) {
         this.resourceLoader = resourceLoader;
-        this.stockPriceRepository = stockPriceRepository;
+        this.priceHistoryRepository = priceHistoryRepository;
     }
 
     @GetMapping("/update")
     @ResponseBody
-    public void updateStockPrices() {
+    public String updatePriceHistory() {
         List<String> stocks = getCsvFileNames();
         for (String stock : stocks) {
             long lineCount = 0;
@@ -43,7 +43,7 @@ public class UpdateStockPrices {
                     log.info("{}: {}, {}, {}, {}, {}, {}",
                             lineCount, lineSplit[0], lineSplit[1], lineSplit[2], lineSplit[3], lineSplit[4], lineSplit[5]);
                     if (lineCount > 0) {
-                        StockPrice stockPrice = new StockPrice(
+                        PriceHistory priceHistory = new PriceHistory(
                                 null,
                                 stock.toUpperCase(),
                                 lineSplit[0],
@@ -53,7 +53,7 @@ public class UpdateStockPrices {
                                 BigDecimal.valueOf(Double.parseDouble(lineSplit[4])),
                                 Long.parseLong(lineSplit[5])
                         );
-                        stockPriceRepository.save(stockPrice);
+                        priceHistoryRepository.save(priceHistory);
                     }
                     lineCount++;
                 }
@@ -63,6 +63,7 @@ public class UpdateStockPrices {
             log.info("Stock: {} data updated...", stock.toUpperCase());
         }
         log.info("All stock data updated...");
+        return "All stock data updated...";
     }
 
     private List<String> getCsvFileNames() {

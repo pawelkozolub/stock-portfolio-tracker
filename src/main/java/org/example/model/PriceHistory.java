@@ -1,24 +1,25 @@
 package org.example.model;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "stock_prices")
 @NoArgsConstructor
 @AllArgsConstructor
-public class StockPrice {
+@Getter
+@Setter
+@ToString
+public class PriceHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Size(min = 3, max = 3)
-    private String name;
+    private String stock;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private String date;
     @Column(precision = 10, scale = 2)
