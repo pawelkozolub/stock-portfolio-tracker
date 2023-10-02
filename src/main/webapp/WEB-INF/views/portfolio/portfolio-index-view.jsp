@@ -33,13 +33,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach items="${stockPortfolioList}" var="portfilio" varStatus="ind">
+                    <c:forEach items="${stockPortfolioList}" var="portfolio" varStatus="ind">
                         <tr>
                             <td><c:out value="${ind.index+1}"/></td>
-                            <td><c:out value="${portfilio.name}"/></td>
-                            <td><c:out value="${portfilio.description}"/></td>
+                            <td><c:out value="${portfolio.name}"/></td>
+                            <td><c:out value="${portfolio.description}"/></td>
                             <td>
-                                <a href="<c:out value="/"/>">View</a>
+                                <a href="<c:out value="/portfolio/${portfolio.id}"/>">View</a>
                                 <a href="<c:out value="/"/>">Edit</a>
                                 <a href="<c:out value="/"/>">Delete</a>
                             </td>

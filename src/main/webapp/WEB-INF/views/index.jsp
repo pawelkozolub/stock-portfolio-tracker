@@ -10,7 +10,7 @@
 <div>
     <h2>Stock portfolio tracking</h2>
     <p>
-        <a href="/">Start</a><br/>
+        <a href="/portfolio">Start</a><br/>
     </p>
 </div>
 </body>
