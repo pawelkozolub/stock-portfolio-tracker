@@ -4,11 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "stock_portfolios")
@@ -26,4 +30,7 @@ public class StockPortfolio {
     @Size(max = 600)
     @Column(length = 1024)
     private String description;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_portfolio")
+    private List<Stock> stocks = new ArrayList<>();
 }
