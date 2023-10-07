@@ -30,4 +30,6 @@ public class Portfolio {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "portfolio_id")
     private List<Transaction> transactions = new ArrayList<>();
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.REMOVE)
+    private List<Balance> balances = new ArrayList<>();
 }

@@ -27,7 +27,7 @@ public class Transaction {
     private String stock;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private String date;
-    @Min(0)
+    @Min(1)
     private long quantity;
     @Column(precision = 10, scale = 2)
     @Min(0)

@@ -1,8 +1,10 @@
 package org.example.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.model.Balance;
 import org.example.model.Portfolio;
 import org.example.model.Transaction;
+import org.example.service.BalanceRepository;
 import org.example.service.PortfolioRepository;
 import org.example.service.TransactionRepository;
 import org.springframework.stereotype.Controller;
@@ -21,10 +23,12 @@ public class PortfolioController {
 
     private final PortfolioRepository portfolioRepository;
     private final TransactionRepository transactionRepository;
+    private final BalanceRepository balanceRepository;
 
-    public PortfolioController(PortfolioRepository portfolioRepository, TransactionRepository transactionRepository) {
+    public PortfolioController(PortfolioRepository portfolioRepository, TransactionRepository transactionRepository, BalanceRepository balanceRepository) {
         this.portfolioRepository = portfolioRepository;
         this.transactionRepository = transactionRepository;
+        this.balanceRepository = balanceRepository;
     }
 
     @GetMapping
@@ -81,6 +85,7 @@ public class PortfolioController {
     public String view(Model model, @PathVariable(name = "id") Long id) {
         Portfolio portfolio = portfolioRepository.findById(id).orElse(null);
         model.addAttribute("portfolio", portfolio);
+        model.addAttribute("balance", balanceRepository.findAllByPortfolioOrderByStock(portfolio));
         return "portfolio/portfolio-balance-view";
     }
 
@@ -104,6 +109,16 @@ public class PortfolioController {
             transactionRepository.save(transaction);        // first persist Transaction entity
             portfolio.getTransactions().add(transaction);   // then add Transaction entity to list
             portfolioRepository.save(portfolio);            // finally update Portfolio entity
+
+            Balance balance = balanceRepository
+                    .findFirstByPortfolioAndStock(portfolio, transaction.getStock())
+                    .orElse(null);
+            if (balance == null) {
+                balance = new Balance(transaction.getStock());
+                balance.setPortfolio(portfolio);
+            }
+            balance.updateByBuyTransaction(transaction);
+            balanceRepository.save(balance);
         }
         return "redirect:/portfolio/" + id;
     }

@@ -17,6 +17,39 @@
         Profit/Loss:<br/>
     </p>
     <h3>Available stocks</h3>
+    <c:choose>
+        <c:when test="${balance.size() > 0}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Stock</th>
+                        <th>Quantity</th>
+                        <th>Avg. buy price</th>
+                        <th>Invested</th>
+                        <th>Realized profit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach items="${balance}" var="item" varStatus="ind">
+                        <tr>
+                            <td><c:out value="${ind.index+1}"/></td>
+                            <td><c:out value="${item.stock}"/></td>
+                            <td><c:out value="${item.quantity}"/></td>
+                            <td><c:out value="${item.averagePrice}"/></td>
+                            <td><c:out value="${item.invested}"/></td>
+                            <td><c:out value="${item.realizedProfit}"/></td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
+        </c:when>
+        <c:otherwise>
+            <p>
+                No stock balance of the portfolio available.
+            </p>
+        </c:otherwise>
+    </c:choose>
     <h3>Transaction history</h3>
     <a class="button" href="/portfolio/${portfolio.id}/buy">Buy stock</a>
     <a class="button" href="/portfolio/${portfolio.id}/sell">Sell stock</a>
