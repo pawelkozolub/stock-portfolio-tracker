@@ -1,9 +1,9 @@
 package org.example.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.model.Portfolio;
 import org.example.model.Stock;
-import org.example.model.StockPortfolio;
-import org.example.service.StockPortfolioRepository;
+import org.example.service.PortfolioRepository;
 import org.example.service.StockRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,43 +20,43 @@ import java.util.List;
 @RequestMapping("/portfolio")
 public class PortfolioController {
 
-    private final StockPortfolioRepository portfolioRepository;
+    private final PortfolioRepository portfolioRepository;
     private final StockRepository stockRepository;
 
-    public PortfolioController(StockPortfolioRepository portfolioRepository, StockRepository stockRepository) {
+    public PortfolioController(PortfolioRepository portfolioRepository, StockRepository stockRepository) {
         this.portfolioRepository = portfolioRepository;
         this.stockRepository = stockRepository;
     }
 
     @GetMapping
     public String list(Model model) {
-        StockPortfolio stockPortfolio = new StockPortfolio();
-        model.addAttribute("stockPortfolio", stockPortfolio);
-        List<StockPortfolio> stockPortfolioList = portfolioRepository.findAll();
-        model.addAttribute("stockPortfolioList", stockPortfolioList);
-        return "portfolio/portfolio-index-view";
+        Portfolio portfolio = new Portfolio();
+        model.addAttribute("portfolio", portfolio);
+        List<Portfolio> portfolioList = portfolioRepository.findAll();
+        model.addAttribute("portfolioList", portfolioList);
+        return "portfolio/portfolios-list-view";
     }
 
     @PostMapping
-    public String save(StockPortfolio stockPortfolio, BindingResult result) {
+    public String save(Portfolio portfolio, BindingResult result) {
         if (result.hasErrors()) {
-            return "portfolio/portfolio-index-view";
+            return "portfolio/portfolios-list-view";
         }
-        portfolioRepository.save(stockPortfolio);
+        portfolioRepository.save(portfolio);
         return "redirect:/portfolio";
     }
 
     @GetMapping("/{id}")
     public String view(Model model, @PathVariable(name = "id") Long id) {
-        StockPortfolio stockPortfolio = portfolioRepository.findById(id).orElse(null);
-        model.addAttribute("portfolio", stockPortfolio);
-        return "portfolio/portfolio-view";
+        Portfolio portfolio = portfolioRepository.findById(id).orElse(null);
+        model.addAttribute("portfolio", portfolio);
+        return "portfolio/portfolio-balance-view";
     }
 
     @GetMapping("/{portfolioId}/buy")       // portfolioId to be used instead id > Spring confuses it with stock.id
     public String addStock(Model model, @PathVariable(name = "portfolioId") Long id) {
-        StockPortfolio stockPortfolio = portfolioRepository.findById(id).orElse(null);
-        model.addAttribute("portfolio", stockPortfolio);
+        Portfolio portfolio = portfolioRepository.findById(id).orElse(null);
+        model.addAttribute("portfolio", portfolio);
         model.addAttribute("stock", new Stock());
         return "portfolio/buy-stock-view";
     }
@@ -66,11 +66,11 @@ public class PortfolioController {
         if (result.hasErrors()) {
             return "portfolio/buy-stock-view";
         }
-        StockPortfolio stockPortfolio = portfolioRepository.findById(id).orElse(null);
-        if (stockPortfolio != null) {
+        Portfolio portfolio = portfolioRepository.findById(id).orElse(null);
+        if (portfolio != null) {
             stockRepository.save(stock);                // first persist entity -> stock
-            stockPortfolio.getStocks().add(stock);      // then add to list
-            portfolioRepository.save(stockPortfolio);   // finally update entity -> stockPortfolio
+            portfolio.getStocks().add(stock);      // then add to list
+            portfolioRepository.save(portfolio);   // finally update entity -> stockPortfolio
         }
         return "redirect:/portfolio/" + id;
     }

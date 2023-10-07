@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -20,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class StockPortfolio {
+public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

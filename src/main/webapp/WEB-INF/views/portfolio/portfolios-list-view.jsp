@@ -9,20 +9,9 @@
 </head>
 <body>
 <div>
-    <h2>Create new stock portfolio</h2>
-    <form:form method="post" modelAttribute="stockPortfolio">
-        <p>
-            <label>Portfolio name: </label>
-            <form:input path="name"/><form:errors path="name"/><br/>
-            <label>General description: </label>
-            <form:textarea rows="4" path="description"/><form:errors path="description"/><br/>
-        </p>
-        <input type="submit" value="Create portfolio">
-    </form:form>
-    <hr/>
     <h2>Available stock portfolios</h2>
     <c:choose>
-        <c:when test="${stockPortfolioList.size() > 0}">
+        <c:when test="${portfolioList.size() > 0}">
             <table>
                 <thead>
                     <tr>
@@ -33,7 +22,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach items="${stockPortfolioList}" var="portfolio" varStatus="ind">
+                    <c:forEach items="${portfolioList}" var="portfolio" varStatus="ind">
                         <tr>
                             <td><c:out value="${ind.index+1}"/></td>
                             <td><c:out value="${portfolio.name}"/></td>
@@ -55,6 +44,17 @@
         </c:otherwise>
     </c:choose>
 
+<%--    <hr/>--%>
+    <h4>Create a new stock portfolio</h4>
+    <form:form method="post" modelAttribute="portfolio">
+        <p>
+            <label>Portfolio name: </label>
+            <form:input path="name"/><form:errors path="name"/><br/>
+            <label>Portfolio description: </label>
+            <form:textarea rows="4" path="description"/><form:errors path="description"/><br/>
+        </p>
+        <input type="submit" value="Create portfolio">
+    </form:form>
 
 </div>
 </body>
