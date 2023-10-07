@@ -8,10 +8,7 @@ import org.example.service.TransactionRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -47,6 +44,18 @@ public class PortfolioController {
         return "redirect:/portfolio";
     }
 
+    @GetMapping("/delete")
+    public String deleteView(@RequestParam Long id, Model model) {
+        model.addAttribute("portfolio", portfolioRepository.findById(id).orElse(null));
+        return "/portfolio/portfolio-delete-view";
+    }
+
+    @PostMapping("/delete")
+    public String deleteEntity(@RequestParam Long id) {
+        portfolioRepository.findById(id).ifPresent(portfolioRepository::delete);
+        return "redirect:/portfolio";
+    }
+
     @GetMapping("/{id}")
     public String view(Model model, @PathVariable(name = "id") Long id) {
         Portfolio portfolio = portfolioRepository.findById(id).orElse(null);
@@ -58,7 +67,6 @@ public class PortfolioController {
     public String addStock(Model model, @PathVariable(name = "portfolioId") Long id) {
         Portfolio portfolio = portfolioRepository.findById(id).orElse(null);
         model.addAttribute("portfolio", portfolio);
-//        model.addAttribute("stock", new Stock());
         model.addAttribute("transaction", new Transaction());
         return "portfolio/buy-stock-view";
     }
@@ -74,8 +82,6 @@ public class PortfolioController {
             transaction.setType("buy");
             transactionRepository.save(transaction);        // first persist Transaction entity
             portfolio.getTransactions().add(transaction);   // then add Transaction entity to list
-            //stockRepository.save(stock);                // first persist entity -> stock
-            //portfolio.getStocks().add(stock);      // then add to list
             portfolioRepository.save(portfolio);            // finally update Portfolio entity
         }
         return "redirect:/portfolio/" + id;
