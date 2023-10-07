@@ -21,31 +21,27 @@
     <a class="button" href="/portfolio/${portfolio.id}/buy">Buy stock</a>
     <a class="button" href="/portfolio/${portfolio.id}/sell">Sell stock</a>
     <c:choose>
-        <c:when test="${portfolio.stocks.size() > 0}">
+        <c:when test="${portfolio.transactions.size() > 0}">
             <table>
                 <thead>
                 <tr>
                     <th>#</th>
+                    <th>Date</th>
+                    <th>Type</th>
                     <th>Stock</th>
                     <th>Quantity</th>
-                    <th>Buy price</th>
-                    <th>Buy date</th>
-                    <th>Action</th>
+                    <th>Price</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${portfolio.stocks}" var="stock" varStatus="ind">
+                <c:forEach items="${portfolio.transactions}" var="transaction" varStatus="ind">
                     <tr>
                         <td><c:out value="${ind.index+1}"/></td>
-                        <td><c:out value="${stock.stock}"/></td>
-                        <td><c:out value="${stock.quantity}"/></td>
-                        <td><c:out value="${stock.buyPrice}"/></td>
-                        <td><c:out value="${stock.buyDate}"/></td>
-                        <td>
-                            <a href="<c:out value="/portfolio/${portfolio.id}"/>">View</a>
-                            <a href="<c:out value="/"/>">Edit</a>
-                            <a href="<c:out value="/"/>">Delete</a>
-                        </td>
+                        <td><c:out value="${transaction.date}"/></td>
+                        <td><c:out value="${transaction.type}"/></td>
+                        <td><c:out value="${transaction.stock}"/></td>
+                        <td><c:out value="${transaction.quantity}"/></td>
+                        <td><c:out value="${transaction.price}"/></td>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -53,7 +49,7 @@
         </c:when>
         <c:otherwise>
             <p>
-                No stocks in the portfolio available. Please buy a selected stock.
+                No transactions in the portfolio available. Please buy a selected stock.
             </p>
         </c:otherwise>
     </c:choose>

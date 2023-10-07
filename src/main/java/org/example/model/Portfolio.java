@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "stock_portfolios")
+@Table(name = "portfolios")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -28,6 +28,6 @@ public class Portfolio {
     @Column(length = 1024)
     private String description;
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_portfolio")
-    private List<Stock> stocks = new ArrayList<>();
+    @JoinColumn(name = "portfolio_id")
+    private List<Transaction> transactions = new ArrayList<>();
 }
