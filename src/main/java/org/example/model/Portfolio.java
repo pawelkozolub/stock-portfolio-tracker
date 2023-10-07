@@ -27,7 +27,7 @@ public class Portfolio {
     @Size(max = 600)
     @Column(length = 1024)
     private String description;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "portfolio_id")
     private List<Transaction> transactions = new ArrayList<>();
 }
