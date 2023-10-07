@@ -9,7 +9,7 @@
 <body>
 <div>
     <p><a href="<c:out value="/portfolio"/>">Back to portfolio selection</a></p>
-    <h2>Portfolio: ${portfolio.name}</h2>
+    <h2>Portfolio: <mark>${portfolio.name}</mark></h2>
     <h3>Summary</h3>
     <p>
         Invested:<br/>

@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -53,6 +54,26 @@ public class PortfolioController {
     @PostMapping("/delete")
     public String deleteEntity(@RequestParam Long id) {
         portfolioRepository.findById(id).ifPresent(portfolioRepository::delete);
+        return "redirect:/portfolio";
+    }
+
+    @GetMapping("/edit")
+    public String editView(@RequestParam Long id, Model model) {
+        model.addAttribute("portfolio", portfolioRepository.findById(id).orElse(null));
+        return "/portfolio/portfolio-edit-view";
+    }
+
+    @PostMapping("edit")
+    public String editEntity(@Valid Portfolio portfolio, BindingResult result) {
+        if (result.hasErrors()) {
+            return "/portfolio/portfolio-edit-view";
+        }
+        portfolioRepository.findById(portfolio.getId()).ifPresent(
+                updatePortfolio -> {
+                    updatePortfolio.setName(portfolio.getName());
+                    updatePortfolio.setDescription(portfolio.getDescription());
+                    portfolioRepository.save(updatePortfolio);
+                });
         return "redirect:/portfolio";
     }
 

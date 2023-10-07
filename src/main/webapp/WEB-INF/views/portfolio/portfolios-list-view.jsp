@@ -29,7 +29,7 @@
                             <td><c:out value="${portfolio.description}"/></td>
                             <td>
                                 <a href="<c:out value="/portfolio/${portfolio.id}"/>">View</a>
-                                <a href="<c:out value="/"/>">Edit</a>
+                                <a href="<c:out value="/portfolio/edit?id=${portfolio.id}"/>">Edit</a>
                                 <a href="<c:out value="/portfolio/delete?id=${portfolio.id}"/>">Delete</a>
                             </td>
                         </tr>
