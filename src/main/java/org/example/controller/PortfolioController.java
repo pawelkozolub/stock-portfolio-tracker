@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.lang.reflect.InaccessibleObjectException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -85,8 +86,20 @@ public class PortfolioController {
     @GetMapping("/{id}")
     public String view(Model model, @PathVariable(name = "id") Long id) {
         Portfolio portfolio = portfolioRepository.findById(id).orElse(null);
+        List<Balance> balanceList = balanceRepository.findAllByPortfolioOrderByStock(portfolio);
+        BigDecimal invested = BigDecimal.valueOf(0);
+        BigDecimal withdrawn = BigDecimal.valueOf(0);
+        BigDecimal realizedProfit = BigDecimal.valueOf(0);
+        for (Balance balance : balanceList) {
+            if (balance.getInvested() != null) invested = invested.add(balance.getInvested());
+            if (balance.getWithdrawn() != null) withdrawn = withdrawn.add(balance.getWithdrawn());
+            if (balance.getRealizedProfit() != null) realizedProfit = realizedProfit.add(balance.getRealizedProfit());
+        }
         model.addAttribute("portfolio", portfolio);
-        model.addAttribute("balance", balanceRepository.findAllByPortfolioOrderByStock(portfolio));
+        model.addAttribute("balanceList", balanceList);
+        model.addAttribute("invested", invested);
+        model.addAttribute("withdrawn", withdrawn);
+        model.addAttribute("realizedProfit", realizedProfit);
         return "portfolio/portfolio-balance-view";
     }
 

@@ -11,14 +11,35 @@
     <p><a href="<c:out value="/portfolio"/>">Back to portfolio selection</a></p>
     <h2>Portfolio: <mark>${portfolio.name}</mark></h2>
     <h3>Summary</h3>
-    <p>
-        Invested:<br/>
-        Withdrawn:<br/>
-        Realized profit:<br/>
-    </p>
+    <c:choose>
+        <c:when test="${balanceList.size() > 0}">
+            <table>
+                <tbody>
+                <tr>
+                    <th>Invested</th>
+                    <td><c:out value="${invested}"/></td>
+                </tr>
+                <tr>
+                    <th>Withdrawn</th>
+                    <td><c:out value="${withdrawn}"/></td>
+                </tr>
+                <tr>
+                    <th>Realized profit</th>
+                    <td><c:out value="${realizedProfit}"/></td>
+                </tr>
+                </tbody>
+            </table>
+        </c:when>
+        <c:otherwise>
+            <p>
+                No portfolio summary available.
+            </p>
+        </c:otherwise>
+    </c:choose>
+
     <h3>Available stocks</h3>
     <c:choose>
-        <c:when test="${balance.size() > 0}">
+        <c:when test="${balanceList.size() > 0}">
             <table>
                 <thead>
                     <tr>
@@ -32,7 +53,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach items="${balance}" var="item" varStatus="ind">
+                    <c:forEach items="${balanceList}" var="item" varStatus="ind">
                         <tr>
                             <td><c:out value="${ind.index+1}"/></td>
                             <td><c:out value="${item.stock}"/></td>
@@ -65,7 +86,8 @@
                     <th>Type</th>
                     <th>Stock</th>
                     <th>Quantity</th>
-                    <th>Price</th>
+                    <th>Price/share</th>
+                    <th>Total value</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -77,6 +99,7 @@
                         <td><c:out value="${transaction.stock}"/></td>
                         <td><c:out value="${transaction.quantity}"/></td>
                         <td><c:out value="${transaction.price}"/></td>
+                        <td><c:out value="${transaction.price * transaction.quantity}"/></td>
                     </tr>
                 </c:forEach>
                 </tbody>
