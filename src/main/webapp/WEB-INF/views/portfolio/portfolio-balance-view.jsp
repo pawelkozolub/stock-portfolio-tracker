@@ -13,8 +13,8 @@
     <h3>Summary</h3>
     <p>
         Invested:<br/>
-        Profit/Loss:<br/>
-        Profit/Loss:<br/>
+        Withdrawn:<br/>
+        Realized profit:<br/>
     </p>
     <h3>Available stocks</h3>
     <c:choose>
@@ -27,6 +27,7 @@
                         <th>Quantity</th>
                         <th>Avg. buy price</th>
                         <th>Invested</th>
+                        <th>Withdrawn</th>
                         <th>Realized profit</th>
                     </tr>
                 </thead>
@@ -38,6 +39,7 @@
                             <td><c:out value="${item.quantity}"/></td>
                             <td><c:out value="${item.averagePrice}"/></td>
                             <td><c:out value="${item.invested}"/></td>
+                            <td><c:out value="${item.withdrawn}"/></td>
                             <td><c:out value="${item.realizedProfit}"/></td>
                         </tr>
                     </c:forEach>

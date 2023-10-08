@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.lang.reflect.InaccessibleObjectException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -90,7 +91,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/{portfolioId}/buy")       // portfolioId to be used instead id > Spring confuses it with stock.id
-    public String addStock(Model model, @PathVariable(name = "portfolioId") Long id) {
+    public String buyStockView(Model model, @PathVariable(name = "portfolioId") Long id) {
         Portfolio portfolio = portfolioRepository.findById(id).orElse(null);
         model.addAttribute("portfolio", portfolio);
         model.addAttribute("transaction", new Transaction());
@@ -98,7 +99,7 @@ public class PortfolioController {
     }
 
     @PostMapping("/{portfolioId}/buy")      // portfolioId to be used instead id > Spring confuses it with stock.id
-    public String saveStock(Transaction transaction, BindingResult result, @PathVariable(name = "portfolioId") Long id) {
+    public String saveBuyStock(Transaction transaction, BindingResult result, @PathVariable(name = "portfolioId") Long id) {
         if (result.hasErrors()) {
             return "portfolio/buy-stock-view";
         }
@@ -123,4 +124,42 @@ public class PortfolioController {
         return "redirect:/portfolio/" + id;
     }
 
+    @GetMapping("/{portfolioId}/sell")
+    public String sellStockView(Model model, @PathVariable(name = "portfolioId") Long id) {
+        Portfolio portfolio = portfolioRepository.findById(id).orElse(null);
+        List<Balance> balanceList = balanceRepository.findAllByPortfolioOrderByStock(portfolio);
+        if (balanceList.isEmpty()) {
+            return "redirect:/portfolio/" + id;
+        }
+        model.addAttribute("portfolio", portfolio);
+        model.addAttribute("transaction", new Transaction());
+        model.addAttribute("balanceList", balanceList);
+        return "portfolio/sell-stock-view";
+    }
+
+    @PostMapping("/{portfolioId}/sell")
+    public String saveSellStock(Transaction transaction, BindingResult result, @PathVariable(name = "portfolioId") Long id) {
+        if (result.hasErrors()) {
+            return "portfolio/sell-stock-view";
+        }
+        Portfolio portfolio = portfolioRepository.findById(id).orElse(null);
+        if (portfolio != null) {
+            Balance balance = balanceRepository
+                    .findFirstByPortfolioAndStock(portfolio, transaction.getStock())
+                    .orElseThrow(IllegalAccessError::new);
+            if (balance.getQuantity() > 0) {
+                if (transaction.getQuantity() > balance.getQuantity()) {
+                    transaction.setQuantity(balance.getQuantity());
+                }
+                transaction.setCreated(String.valueOf(LocalDateTime.now()));
+                transaction.setType("sell");
+                transactionRepository.save(transaction);
+                portfolio.getTransactions().add(transaction);
+                portfolioRepository.save(portfolio);
+                balance.updateBySellTransaction(transaction);
+                balanceRepository.save(balance);
+            }
+        }
+        return "redirect:/portfolio/" + id;
+    }
 }

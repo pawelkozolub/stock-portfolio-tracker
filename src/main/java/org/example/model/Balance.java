@@ -32,6 +32,9 @@ public class Balance {
     @Column(precision = 10, scale = 2)
     @Min(0)
     private BigDecimal invested = BigDecimal.valueOf(0.0);
+    @Column(precision = 10, scale = 2)
+    @Min(0)
+    private BigDecimal withdrawn = BigDecimal.valueOf(0.0);
     @Column(name = "realized_profit", precision = 10, scale = 2)
     private BigDecimal realizedProfit = BigDecimal.valueOf(0.0);
     @ManyToOne
@@ -44,16 +47,26 @@ public class Balance {
     public void updateByBuyTransaction(Transaction transaction) {
         if (transaction.getType().equals("buy")) {
             BigDecimal currentValue = this.averagePrice.multiply(BigDecimal.valueOf(this.quantity));
-            BigDecimal newValue = transaction.getPrice().multiply(BigDecimal.valueOf(transaction.getQuantity()));
-            BigDecimal totalQuantity = BigDecimal.valueOf(this.quantity + transaction.getQuantity());
-            BigDecimal totalValue = currentValue.add(newValue);
+            BigDecimal transactionValue = transaction.getPrice().multiply(BigDecimal.valueOf(transaction.getQuantity()));
+            BigDecimal updatedQuantity = BigDecimal.valueOf(this.quantity + transaction.getQuantity());
+            BigDecimal updatedValue = currentValue.add(transactionValue);
             this.quantity += transaction.getQuantity();
-            this.averagePrice = totalValue.divide(totalQuantity, RoundingMode.HALF_UP);
-            this.invested = this.invested.add(newValue);
+            this.averagePrice = updatedValue.divide(updatedQuantity, RoundingMode.HALF_UP);
+            this.invested = this.invested.add(transactionValue);
         }
     }
 
     public void updateBySellTransaction(Transaction transaction) {
-        //to do
+        if (transaction.getType().equals("sell")) {
+            BigDecimal baseValue = this.averagePrice.multiply(BigDecimal.valueOf(transaction.getQuantity()));
+            BigDecimal transactionValue = transaction.getPrice().multiply(BigDecimal.valueOf(transaction.getQuantity()));
+            BigDecimal transactionProfit = transactionValue.subtract(baseValue);
+            this.quantity -= transaction.getQuantity();
+            if (this.quantity == 0) {
+                this.averagePrice = BigDecimal.valueOf(0);
+            }
+            this.realizedProfit = this.realizedProfit.add(transactionProfit);
+            this.withdrawn = this.withdrawn.add(transactionValue);
+        }
     }
 }
