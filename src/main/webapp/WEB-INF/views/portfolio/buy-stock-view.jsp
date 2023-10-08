@@ -14,9 +14,9 @@
         <label>Stock name: </label>
         <form:input path="stock"/><form:errors path="stock"/><br/>
         <label>Quantity: </label>
-        <form:input path="quantity"/><form:errors path="quantity"/><br/>
+        <form:input type="number" value="1" min="1" step="1" path="quantity"/><form:errors path="quantity"/><br/>
         <label>Date: </label>
-        <form:input path="date"/><form:errors path="date"/><br/>
+        <form:input type="date" path="date"/><form:errors path="date"/><br/>
         <label>Price: </label>
         <form:input path="price"/><form:errors path="price"/><br/>
         <input type="submit" value="Buy stock">
