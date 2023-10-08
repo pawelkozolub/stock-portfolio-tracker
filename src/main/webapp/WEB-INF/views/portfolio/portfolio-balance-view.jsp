@@ -37,7 +37,7 @@
         </c:otherwise>
     </c:choose>
 
-    <h3>Available stocks</h3>
+    <h3>Stock balance</h3>
     <c:choose>
         <c:when test="${balanceList.size() > 0}">
             <table>
