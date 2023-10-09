@@ -35,7 +35,7 @@ public class PortfolioService {
         BigDecimal realizedProfit = BigDecimal.valueOf(0);
         for (Balance balance : balanceList) {
             if (balance.getInvested() != null) {
-                realizedProfit = realizedProfit.add(balance.getInvested());
+                realizedProfit = realizedProfit.add(balance.getRealizedProfit());
             }
         }
         return realizedProfit;
