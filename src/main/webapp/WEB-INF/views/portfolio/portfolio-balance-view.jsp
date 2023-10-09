@@ -17,15 +17,15 @@
                 <tbody>
                 <tr>
                     <th>Invested</th>
-                    <td><c:out value="${invested}"/></td>
+                    <td><c:out value="${summary.invested}"/></td>
                 </tr>
                 <tr>
                     <th>Withdrawn</th>
-                    <td><c:out value="${withdrawn}"/></td>
+                    <td><c:out value="${summary.withdrawn}"/></td>
                 </tr>
                 <tr>
                     <th>Realized profit</th>
-                    <td><c:out value="${realizedProfit}"/></td>
+                    <td><c:out value="${summary.realizedProfit}"/></td>
                 </tr>
                 </tbody>
             </table>

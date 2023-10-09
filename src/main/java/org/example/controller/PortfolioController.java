@@ -6,7 +6,7 @@ import org.example.model.Portfolio;
 import org.example.model.Transaction;
 import org.example.service.BalanceRepository;
 import org.example.service.PortfolioRepository;
-import org.example.service.PortfolioService;
+import org.example.service.portfolio.PortfolioService;
 import org.example.service.TransactionRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -91,9 +90,7 @@ public class PortfolioController {
         List<Balance> balanceList = balanceRepository.findAllByPortfolioOrderByStock(portfolio);
         model.addAttribute("portfolio", portfolio);
         model.addAttribute("balanceList", balanceList);
-        model.addAttribute("invested", portfolioService.invested(balanceList));
-        model.addAttribute("withdrawn", portfolioService.withdrawn(balanceList));
-        model.addAttribute("realizedProfit", portfolioService.realizedProfit(balanceList));
+        model.addAttribute("summary", portfolioService.getSummary(balanceList));
         return "portfolio/portfolio-balance-view";
     }
 

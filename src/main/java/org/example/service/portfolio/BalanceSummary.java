@@ -1,17 +1,26 @@
-package org.example.service;
+package org.example.service.portfolio;
 
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.model.Balance;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@Service
-@NoArgsConstructor
-public class PortfolioService {
+@Getter
+@Setter
+public class BalanceSummary {
+    private BigDecimal invested;
+    private BigDecimal withdrawn;
+    private BigDecimal realizedProfit;
 
-    public BigDecimal invested(List<Balance> balanceList) {
+    public BalanceSummary(List<Balance> balance) {
+        this.invested = invested(balance);
+        this.withdrawn = withdrawn(balance);
+        this.realizedProfit = realizedProfit(balance);
+    }
+
+    private BigDecimal invested(List<Balance> balanceList) {
         BigDecimal invested = BigDecimal.valueOf(0);
         for (Balance balance : balanceList) {
             if (balance.getInvested() != null) {
@@ -21,7 +30,7 @@ public class PortfolioService {
         return invested;
     }
 
-    public BigDecimal withdrawn(List<Balance> balanceList) {
+    private BigDecimal withdrawn(List<Balance> balanceList) {
         BigDecimal withdrawn = BigDecimal.valueOf(0);
         for (Balance balance : balanceList) {
             if (balance.getInvested() != null) {
@@ -31,7 +40,7 @@ public class PortfolioService {
         return withdrawn;
     }
 
-    public BigDecimal realizedProfit(List<Balance> balanceList) {
+    private BigDecimal realizedProfit(List<Balance> balanceList) {
         BigDecimal realizedProfit = BigDecimal.valueOf(0);
         for (Balance balance : balanceList) {
             if (balance.getInvested() != null) {
