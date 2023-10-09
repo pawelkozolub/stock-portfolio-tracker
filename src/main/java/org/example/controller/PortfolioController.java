@@ -112,7 +112,7 @@ public class PortfolioController {
     }
 
     @PostMapping("/{portfolioId}/buy")      // portfolioId to be used instead id > Spring confuses it with stock.id
-    public String saveBuyStock(Transaction transaction, BindingResult result, @PathVariable(name = "portfolioId") Long id) {
+    public String saveBuyStock(@Valid Transaction transaction, BindingResult result, @PathVariable(name = "portfolioId") Long id) {
         if (result.hasErrors()) {
             return "portfolio/buy-stock-view";
         }
@@ -151,7 +151,7 @@ public class PortfolioController {
     }
 
     @PostMapping("/{portfolioId}/sell")
-    public String saveSellStock(Transaction transaction, BindingResult result, @PathVariable(name = "portfolioId") Long id) {
+    public String saveSellStock(@Valid Transaction transaction, BindingResult result, @PathVariable(name = "portfolioId") Long id) {
         if (result.hasErrors()) {
             return "portfolio/sell-stock-view";
         }
