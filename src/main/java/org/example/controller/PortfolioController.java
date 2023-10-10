@@ -1,35 +1,29 @@
 package org.example.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import org.example.model.Balance;
 import org.example.model.Portfolio;
 import org.example.model.Transaction;
 import org.example.service.BalanceRepository;
 import org.example.service.PortfolioRepository;
 import org.example.service.portfolio.PortfolioService;
-import org.example.service.TransactionRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
 
-@Slf4j
 @Controller
 @RequestMapping("/portfolio")
 public class PortfolioController {
 
     private final PortfolioRepository portfolioRepository;
-    private final TransactionRepository transactionRepository;
     private final BalanceRepository balanceRepository;
     private final PortfolioService portfolioService;
 
-    public PortfolioController(PortfolioRepository portfolioRepository, TransactionRepository transactionRepository, BalanceRepository balanceRepository, PortfolioService portfolioService) {
+    public PortfolioController(PortfolioRepository portfolioRepository, BalanceRepository balanceRepository, PortfolioService portfolioService) {
         this.portfolioRepository = portfolioRepository;
-        this.transactionRepository = transactionRepository;
         this.balanceRepository = balanceRepository;
         this.portfolioService = portfolioService;
     }
@@ -108,23 +102,8 @@ public class PortfolioController {
             return "portfolio/buy-stock-view";
         }
         Portfolio portfolio = portfolioRepository.findById(id).orElse(null);
-        if (portfolio != null) {
-            transaction.setCreated(String.valueOf(LocalDateTime.now()));
-            transaction.setType("buy");
-            transactionRepository.save(transaction);        // first persist Transaction entity
-            portfolio.getTransactions().add(transaction);   // then add Transaction entity to list
-            portfolioRepository.save(portfolio);            // finally update Portfolio entity
+        portfolioService.makeBuyPortfolioTransaction(portfolio, transaction);
 
-            Balance balance = balanceRepository
-                    .findFirstByPortfolioAndStock(portfolio, transaction.getStock())
-                    .orElse(null);
-            if (balance == null) {
-                balance = new Balance(transaction.getStock());
-                balance.setPortfolio(portfolio);
-            }
-            balance.updateByBuyTransaction(transaction);
-            balanceRepository.save(balance);
-        }
         return "redirect:/portfolio/" + id;
     }
 
@@ -147,23 +126,7 @@ public class PortfolioController {
             return "portfolio/sell-stock-view";
         }
         Portfolio portfolio = portfolioRepository.findById(id).orElse(null);
-        if (portfolio != null) {
-            Balance balance = balanceRepository
-                    .findFirstByPortfolioAndStock(portfolio, transaction.getStock())
-                    .orElseThrow(IllegalAccessError::new);
-            if (balance.getQuantity() > 0) {
-                if (transaction.getQuantity() > balance.getQuantity()) {
-                    transaction.setQuantity(balance.getQuantity());
-                }
-                transaction.setCreated(String.valueOf(LocalDateTime.now()));
-                transaction.setType("sell");
-                transactionRepository.save(transaction);
-                portfolio.getTransactions().add(transaction);
-                portfolioRepository.save(portfolio);
-                balance.updateBySellTransaction(transaction);
-                balanceRepository.save(balance);
-            }
-        }
+        portfolioService.makeSellPortfolioTransaction(portfolio, transaction);
         return "redirect:/portfolio/" + id;
     }
 }
