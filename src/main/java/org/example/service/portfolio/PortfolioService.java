@@ -3,6 +3,7 @@ package org.example.service.portfolio;
 import org.example.model.Balance;
 import org.example.model.Portfolio;
 import org.example.model.Transaction;
+import org.example.model.TransactionType;
 import org.example.service.BalanceRepository;
 import org.example.service.PortfolioRepository;
 import org.example.service.TransactionRepository;
@@ -33,7 +34,7 @@ public class PortfolioService {
     public void makeBuyPortfolioTransaction(Portfolio portfolio, Transaction transaction) {
         if (portfolio != null) {
             transaction.setCreated(String.valueOf(LocalDateTime.now()));
-            transaction.setType("buy");
+            transaction.setType(TransactionType.BUY.name());
             transactionRepository.save(transaction);        // first persist Transaction entity
             portfolio.getTransactions().add(transaction);   // then add Transaction entity to list
             portfolioRepository.save(portfolio);            // finally update Portfolio entity
@@ -60,7 +61,7 @@ public class PortfolioService {
                     transaction.setQuantity(balance.getQuantity());
                 }
                 transaction.setCreated(String.valueOf(LocalDateTime.now()));
-                transaction.setType("sell");
+                transaction.setType(TransactionType.SELL.name());
                 transactionRepository.save(transaction);
                 portfolio.getTransactions().add(transaction);
                 portfolioRepository.save(portfolio);

@@ -45,7 +45,7 @@ public class Balance {
     }
 
     public void updateByBuyTransaction(Transaction transaction) {
-        if (transaction.getType().equals("buy")) {
+        if (transaction.getType().equals(TransactionType.BUY.name())) {
             BigDecimal currentValue = this.averagePrice.multiply(BigDecimal.valueOf(this.quantity));
             BigDecimal transactionValue = transaction.getPrice().multiply(BigDecimal.valueOf(transaction.getQuantity()));
             BigDecimal updatedQuantity = BigDecimal.valueOf(this.quantity + transaction.getQuantity());
@@ -57,7 +57,7 @@ public class Balance {
     }
 
     public void updateBySellTransaction(Transaction transaction) {
-        if (transaction.getType().equals("sell")) {
+        if (transaction.getType().equals(TransactionType.SELL.name())) {
             BigDecimal baseValue = this.averagePrice.multiply(BigDecimal.valueOf(transaction.getQuantity()));
             BigDecimal transactionValue = transaction.getPrice().multiply(BigDecimal.valueOf(transaction.getQuantity()));
             BigDecimal transactionProfit = transactionValue.subtract(baseValue);
