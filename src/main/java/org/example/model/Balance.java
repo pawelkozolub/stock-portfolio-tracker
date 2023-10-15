@@ -48,10 +48,8 @@ public class Balance {
         if (transaction.getType().equals(TransactionType.BUY.name())) {
             BigDecimal currentValue = calculateValue(this.quantity, this.averagePrice);
             BigDecimal transactionValue = calculateValue(transaction.getQuantity(), transaction.getPrice());
-            BigDecimal updatedQuantity = BigDecimal.valueOf(this.quantity + transaction.getQuantity());
-            BigDecimal updatedValue = currentValue.add(transactionValue);
             this.quantity += transaction.getQuantity();
-            this.averagePrice = updatedValue.divide(updatedQuantity, RoundingMode.HALF_UP);
+            this.averagePrice = calculateAveragePrice(this.quantity, currentValue.add(transactionValue));
             this.invested = this.invested.add(transactionValue);
         }
     }
@@ -63,7 +61,7 @@ public class Balance {
             BigDecimal transactionProfit = transactionValue.subtract(baseValue);
             this.quantity -= transaction.getQuantity();
             if (this.quantity == 0) {
-                this.averagePrice = BigDecimal.valueOf(0);
+                this.averagePrice = setZeroPrice();
             }
             this.realizedProfit = this.realizedProfit.add(transactionProfit);
             this.withdrawn = this.withdrawn.add(transactionValue);
@@ -72,5 +70,16 @@ public class Balance {
 
     public BigDecimal calculateValue(Long quantity, BigDecimal price) {
         return price.multiply(BigDecimal.valueOf(quantity));
+    }
+
+    public BigDecimal calculateAveragePrice(Long quantity, BigDecimal value) {
+        if (quantity == 0) {
+            throw new IllegalArgumentException("Average price for quantity = 0 cannot be determined");
+        }
+        return value.divide(BigDecimal.valueOf(quantity), RoundingMode.HALF_UP);
+    }
+
+    public BigDecimal setZeroPrice() {
+        return BigDecimal.valueOf(0.0);
     }
 }
