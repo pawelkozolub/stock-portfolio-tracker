@@ -60,7 +60,7 @@ class BalanceTest {
     }
 
     @Test
-    public void givenZeroQuantity_whenCalculateAveragePrice_thenZeroPrice() {
+    public void givenZeroQuantity_whenCalculateAveragePrice_thenThrowException() {
         Long quantity = 0L;
         BigDecimal value = BigDecimal.valueOf(10.00);
         IllegalArgumentException exception =
