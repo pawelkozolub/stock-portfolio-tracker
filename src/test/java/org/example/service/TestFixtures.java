@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.model.Balance;
+import org.example.model.Portfolio;
 import org.example.model.Transaction;
 import org.example.model.TransactionType;
 
@@ -35,5 +36,15 @@ public class TestFixtures {
         balance.setWithdrawn(BigDecimal.valueOf(withdrawn).setScale(2, RoundingMode.HALF_UP));
         balance.setRealizedProfit(BigDecimal.valueOf(realizedProfit).setScale(2, RoundingMode.HALF_UP));
         return balance;
+    }
+
+    public static BigDecimal convertToPrice(double value) {
+        return BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public static Portfolio makePortfolioWithId(long id) {
+        Portfolio portfolio = new Portfolio();
+        portfolio.setId(id);
+        return portfolio;
     }
 }
