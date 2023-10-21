@@ -99,7 +99,6 @@ class PortfolioServiceTest {
     }
 
     @Test
-    @Disabled
     public void givenPortfolioAndTransaction_whenBuyTransaction_thenUpdateExistingBalance() {
         PortfolioService ps = Mockito.mock(PortfolioService.class);
         Portfolio portfolio = TestFixtures.makePortfolioWithId(100L);
@@ -107,26 +106,25 @@ class PortfolioServiceTest {
         Transaction transaction1 = TestFixtures.transactionBuy(1L, stock, 10, 100.00);
         Transaction transaction2 = TestFixtures.transactionBuy(2L, stock, 10, 200.00);
         Balance balance = new Balance(stock);
+        balance.setPortfolio(portfolio);
         balance.updateByBuyTransaction(transaction1);
 
-//        Mockito.when(balanceRepositoryMock.findFirstByPortfolioAndStock(portfolio, transaction2.getStock()))
-//                .thenReturn(Optional.of(balance));
+        Mockito.when(balanceRepositoryMock.findFirstByPortfolioAndStock(portfolio, transaction2.getStock()))
+                .thenReturn(Optional.of(balance));
 
         Mockito.doAnswer(invocationOnMock -> {
-//            Balance balanceInvoked = balanceRepositoryMock
-//                    .findFirstByPortfolioAndStock(portfolio, transaction2.getStock())
-//                    .orElse(null);
-            Balance balanceInvoked = balance;
+            Balance balanceInvoked = balanceRepositoryMock
+                    .findFirstByPortfolioAndStock(portfolio, transaction2.getStock())
+                    .orElse(null);
             if (balanceInvoked == null) {
                 log.warn("null balance in test found...");
                 return null;
             }
 
-            log.info("{}", balanceInvoked.getPortfolio().getId());
             balanceInvoked.updateByBuyTransaction(transaction2);
 
             assertEquals(100L, balanceInvoked.getPortfolio().getId());
-            assertEquals("AAA", balanceInvoked.getStock());
+            assertEquals("BBB", balanceInvoked.getStock());
             assertEquals(20L, balanceInvoked.getQuantity());
             assertEquals(TestFixtures.convertToPrice(150.00), balanceInvoked.getAveragePrice());
             assertEquals(TestFixtures.convertToPrice(3000.00), balanceInvoked.getInvested());
